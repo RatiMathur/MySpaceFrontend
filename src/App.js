@@ -9,7 +9,7 @@ import CreateProduct from "./Components/CreateProduct";
 import UpdateProduct from "./Components/UpdateProduct";
 import NotFound from "./Components/NotFound";
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./Components/shared/ProtectedRoute";
+import ProtectedRoute from "./Components/shared/ProtectedRoute";
 function App() {
   return (
     <>
