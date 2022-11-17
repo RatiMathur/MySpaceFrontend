@@ -2,10 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { customPOST } from "../utilities";
 
-export default function Signup() {
+export default function SignUp() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const navigate = useNavigate();
 
   function onSubmit(event) {
@@ -16,11 +17,13 @@ export default function Signup() {
       password: password,
       confirmPassword: confirmPassword,
     };
+
     customPOST("auth/signup", request).then((response) => {
       localStorage.setItem("token", response.data.token);
-      navigate("/dashoard");
+      navigate("/dashboard");
     });
   }
+
   return (
     <>
       <div className="container pt-5">
