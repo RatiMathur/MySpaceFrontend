@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8000/"; //change it to heroku link once deploy the code
+const baseUrl = "https://myspacebackend.herokuapp.com/"; //change it to heroku link once deploy the code
 
 export function customGET(url) {
   const token = localStorage.getItem("token");
