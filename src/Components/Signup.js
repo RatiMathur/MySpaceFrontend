@@ -1,16 +1,32 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { customPOST } from "../utilities";
+import { emailPattern, passwordPattern } from "../utilities/regularExpressions";
 
 export default function SignUp() {
   const [userName, setUserName] = useState("");
+  const [userNameError, setUserNameError] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const navigate = useNavigate();
 
   function onSubmit(event) {
     event.preventDefault();
+
+    setUserNameAndError(userName);
+    setPasswordAndError(password);
+    setConfirmPasswordAndError(confirmPassword);
+
+    if (
+      !emailPattern.test(userName) ||
+      !passwordPattern.test(password) ||
+      confirmPassword !== password
+    ) {
+      return;
+    }
 
     const request = {
       userName: userName,
@@ -22,6 +38,46 @@ export default function SignUp() {
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
     });
+  }
+
+  function setUserNameAndError(value) {
+    setUserName(value);
+
+    if (value === "") {
+      setUserNameError("Please enter email address");
+    } else if (!emailPattern.test(value)) {
+      setUserNameError("Please enter valid email address");
+    } else {
+      setUserNameError("");
+    }
+  }
+
+  function setPasswordAndError(value) {
+    setPassword(value);
+
+    if (value === "") {
+      setPasswordError("Please enter password");
+    } else if (!passwordPattern.test(value)) {
+      setPasswordError("Please enter valid password");
+    } else {
+      setPasswordError("");
+    }
+  }
+
+  function setConfirmPasswordAndError(value) {
+    setConfirmPassword(value);
+
+    if (value === "") {
+      setConfirmPasswordError("Please enter confirm password");
+    } else if (!passwordPattern.test(value)) {
+      setConfirmPasswordError("Please enter valid confirm password");
+    } else if (value !== password) {
+      setConfirmPasswordError(
+        "Please enter same confirm password which you enter in password field"
+      );
+    } else {
+      setConfirmPasswordError("");
+    }
   }
 
   return (
@@ -38,11 +94,15 @@ export default function SignUp() {
                 </label>
                 <input
                   type="email"
-                  className="form-control"
+                  className={`form-control ${userNameError && `is-invalid`}`}
                   id="userName"
                   value={userName}
-                  onChange={(event) => setUserName(event.target.value)}
+                  onChange={(event) => setUserNameAndError(event.target.value)}
+                  onBlur={(event) => setUserNameAndError(event.target.value)}
                 />
+                {userNameError && (
+                  <span className="text-danger">{userNameError}</span>
+                )}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">
@@ -50,12 +110,16 @@ export default function SignUp() {
                 </label>
                 <input
                   type="password"
-                  className="form-control"
+                  className={`form-control ${passwordError && "is-invalid"}`}
                   id="password"
                   autoComplete="on"
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  onChange={(event) => setPasswordAndError(event.target.value)}
+                  onBlur={(event) => setPasswordAndError(event.target.value)}
                 />
+                {passwordError && (
+                  <span className="text-danger">{passwordError}</span>
+                )}
               </div>
               <div className="mb-3">
                 <label htmlFor="confirmPassword" className="form-label">
@@ -63,12 +127,22 @@ export default function SignUp() {
                 </label>
                 <input
                   type="password"
-                  className="form-control"
+                  className={`form-control ${
+                    confirmPasswordError && `is-invalid`
+                  }`}
                   id="confirmPassword"
                   autoComplete="on"
                   value={confirmPassword}
-                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  onChange={(event) =>
+                    setConfirmPasswordAndError(event.target.value)
+                  }
+                  onBlur={(event) =>
+                    setConfirmPasswordAndError(event.target.value)
+                  }
                 />
+                {confirmPasswordError && (
+                  <span className="text-danger">{confirmPasswordError}</span>
+                )}
               </div>
               <button type="submit" className="btn btn-primary">
                 Submit

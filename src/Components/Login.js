@@ -81,7 +81,7 @@ export default function Login() {
                   onBlur={(event) => setUserNameAndError(event.target.value)}
                 />
                 {userNameError && (
-                  <span className="text-danger">{userNameError}</span>
+                  <span className="text-danger">{userNameError}</span> //This is to display the html component if some condition is fulfilled
                 )}
               </div>
               <div className="mb-3">
