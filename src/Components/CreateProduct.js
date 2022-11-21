@@ -4,14 +4,23 @@ import { customPOST } from "../utilities";
 
 export default function CreateProduct() {
   const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [quantityError, setQuantityError] = useState();
   const [price, setPrice] = useState(1);
+  const [priceError, setPriceError] = useState();
 
   const navigate = useNavigate();
 
   function onSubmit(event) {
     event.preventDefault();
+
+    setNameandError(name);
+    setDescriptionandError(description);
+    setPriceandError(price);
+    setQuantityandError(quantity);
 
     const request = {
       name,
@@ -23,6 +32,34 @@ export default function CreateProduct() {
     customPOST("products", request).then((response) =>
       navigate("/dashboard/products")
     );
+  }
+
+  function setNameandError(value) {
+    setName(value);
+    if (value === "") {
+      setNameError("Please enter product name.");
+    } else setNameError("");
+  }
+
+  function setDescriptionandError(value) {
+    setDescription(value);
+    if (value === "") {
+      setDescriptionError("Please enter the description");
+    } else setDescriptionError("");
+  }
+
+  function setPriceandError(value) {
+    setPrice(value);
+    if (value === "") {
+      setPriceError("Please enter price");
+    } else setPriceError("");
+  }
+
+  function setQuantityandError(value) {
+    setQuantity(value);
+    if (value === "") {
+      setQuantityError("Please enter the quantity");
+    } else setQuantityError("");
   }
 
   return (
@@ -37,13 +74,15 @@ export default function CreateProduct() {
               </label>
               <input
                 type="text"
-                className="form-control"
+                className={`form-control ${nameError && `is-invalid`}`}
                 id="productName"
                 placeholder="Product Name"
                 maxLength={40}
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => setNameandError(event.target.value)}
+                onBlur={(event) => setNameandError(event.target.value)}
               />
+              {nameError && <span className="text-danger">{nameError}</span>}
             </div>
             <div className="form-group mt-2">
               <label htmlFor="productDescription" className="mb-2">
@@ -51,12 +90,16 @@ export default function CreateProduct() {
               </label>
               <textarea
                 type="text"
-                className="form-control"
+                className={`form-control ${descriptionError && `is-invalid`}`}
                 id="productDescription"
                 placeholder="Product Description"
                 value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={(event) => setDescriptionandError(event.target.value)}
+                onBlur={(event) => setDescriptionandError(event.target.value)}
               />
+              {descriptionError && (
+                <span className="text-danger">{descriptionError}</span>
+              )}
             </div>
             <div className="form-group mt-2">
               <div className="row">
@@ -66,12 +109,18 @@ export default function CreateProduct() {
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${quantityError && `is-invalid`}`}
                     placeholder="Quantity"
                     id="productQuantity"
                     value={quantity}
-                    onChange={(event) => setQuantity(event.target.value)}
+                    onChange={(event) =>
+                      setQuantityandError(event.target.value)
+                    }
+                    onBlur={(event) => setQuantityandError(event.target.value)}
                   />
+                  {quantityError && (
+                    <span className="text-danger">{quantityError}</span>
+                  )}
                 </div>
                 <div className="col">
                   <label htmlFor="productPrice" className="mb-2">
@@ -79,12 +128,16 @@ export default function CreateProduct() {
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${priceError && `is-invalid`}`}
                     placeholder="price"
                     id="productPrice"
                     value={price}
-                    onChange={(event) => setPrice(event.target.value)}
+                    onChange={(event) => setPriceandError(event.target.value)}
+                    onBlur={(event) => setPriceandError(event.target.value)}
                   />
+                  {priceError && (
+                    <span className="text-danger">{priceError}</span>
+                  )}
                 </div>
               </div>
             </div>
