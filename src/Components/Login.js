@@ -1,27 +1,65 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { customPOST } from "../utilities";
+import { emailPattern, passwordPattern } from "../utilities/regularExpressions";
 
 export default function Login() {
   const [userName, setUserName] = useState("");
+  const [userNameError, setUserNameError] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const navigate = useNavigate();
 
   function onSubmit(event) {
     event.preventDefault();
+
+    setUserNameAndError(userName);
+    setPasswordAndError(password);
+
+    if (!emailPattern.test(userName) && !passwordPattern.test(password)) {
+      return;
+    }
+
     const request = {
       userName: userName,
       password: password,
     };
+
     customPOST("auth/login", request)
       .then((response) => {
         localStorage.setItem("token", response.data.token);
         navigate("/dashboard");
       })
       .catch((error) => {
-        window.alert("Username or Password is incorrect");
+        window.alert("Username or password is incorrect");
       });
   }
+
+  function setUserNameAndError(value) {
+    setUserName(value);
+
+    if (value === "") {
+      setUserNameError("Please enter email address");
+    } else if (!emailPattern.test(value)) {
+      setUserNameError("Please enter valid email address");
+    } else {
+      setUserNameError("");
+    }
+  }
+
+  function setPasswordAndError(value) {
+    setPassword(value);
+
+    if (value === "") {
+      setPasswordError("Please enter password");
+    } else if (!passwordPattern.test(value)) {
+      setPasswordError("Please enter valid password");
+    } else {
+      setPasswordError("");
+    }
+  }
+
   return (
     <>
       <div className="container pt-5">
@@ -36,11 +74,15 @@ export default function Login() {
                 </label>
                 <input
                   type="email"
-                  className="form-control"
+                  className={`form-control ${userNameError && `is-invalid`}`}
                   id="userName"
                   value={userName}
-                  onChange={(event) => setUserName(event.target.value)}
+                  onChange={(event) => setUserNameAndError(event.target.value)}
+                  onBlur={(event) => setUserNameAndError(event.target.value)}
                 />
+                {userNameError && (
+                  <span className="text-danger">{userNameError}</span>
+                )}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">
@@ -48,12 +90,16 @@ export default function Login() {
                 </label>
                 <input
                   type="password"
-                  className="form-control"
+                  className={`form-control ${passwordError && `is-invalid`}`}
                   id="password"
                   autoComplete="on"
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  onChange={(event) => setPasswordAndError(event.target.value)}
+                  onBlur={(event) => setPasswordAndError(event.target.value)}
                 />
+                {passwordError && (
+                  <span className="text-danger">{passwordError}</span>
+                )}
               </div>
               <button type="submit" className="btn btn-primary">
                 Login
