@@ -17,7 +17,7 @@ export default function Login() {
     setUserNameAndError(userName);
     setPasswordAndError(password);
 
-    if (!emailPattern.test(userName) && !passwordPattern.test(password)) {
+    if (!emailPattern.test(userName) || !passwordPattern.test(password)) {
       return;
     }
 
