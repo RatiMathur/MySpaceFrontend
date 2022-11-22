@@ -59,6 +59,8 @@ export default function CreateProduct() {
     setQuantity(value);
     if (value === "") {
       setQuantityError("Please enter the quantity");
+    } else if (value >= 10000) {
+      setQuantityError("Please enter the quantity less than 10000");
     } else setQuantityError("");
   }
 
